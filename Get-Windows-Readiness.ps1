@@ -42,8 +42,8 @@ function InformIT {
 
 $Models = Get-Content -Path "$PSSCRIPTROOT\processors.csv" | convertfrom-csv -Header Manafacturer, series, model
 $Proc = (Get-CimInstance -ClassName Win32_Processor).name -split ' ' | ForEach-Object { $models | Where-Object -Property model -eq $_ }
-$Ram = (Get-WmiObject Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object {[Math]::Round(($_.sum / 1GB),2)}) -gt 4
-$Disk = ((Get-Volume | Where-Object DriveLetter -Match C).size) -gt 68719476736
+$Ram = (Get-WmiObject Win32_PhysicalMemory | Measure-Object -Property capacity -Sum | ForEach-Object { [Math]::Round(($_.sum / 1GB), 2) }) -gt 4
+$Disk = ((Get-WmiObject Win32_LogicalDisk | Select-Object DeviceID, Size, FreeSpace, VolumeName | Where-Object DeviceID -Match 'C:').size) -gt 68719476736
 #$BiosMode = (Confirm-SecureBootUEFI -ErrorVariable ProcessError)
 
 $Results = [PSCustomObject]@{
